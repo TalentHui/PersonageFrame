@@ -10,7 +10,7 @@ namespace Engine\Libary;
 
 use Engine\Common\RequestFunction;
 
-class Argv
+final class Argv
 {
     /**
      * @var array

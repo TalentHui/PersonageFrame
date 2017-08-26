@@ -14,5 +14,5 @@ include "../vendor/autoload.php";
 \vendor\autoload::register();
 
 /** 载入引擎文件 */
-$engine = new \Engine\Libary\Engine();
+$engine = new \Engine\Libary\Engine(ROOT_DIR);
 $engine->run();

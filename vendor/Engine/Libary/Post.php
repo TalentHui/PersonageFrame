@@ -8,7 +8,7 @@
 
 namespace Engine\Libary;
 
-class Post
+final class Post
 {
     /**
      * @var array

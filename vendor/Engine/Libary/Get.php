@@ -6,11 +6,11 @@
  * Desc:      获取 Get 参数
  */
 
-namespace Engine\Base;
+namespace Engine\Libary;
 
 use Engine\Common\RequestFunction;
 
-class Get
+final class Get
 {
     /**
      * @var array
