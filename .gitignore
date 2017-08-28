@@ -1,5 +1,5 @@
 # 用户所要忽略的文件
-
+bash.exe.stackdump
 
 # 用户所要忽略的目录
 .idea

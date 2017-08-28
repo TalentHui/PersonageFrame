@@ -116,6 +116,7 @@ final class Engine
      */
     protected function registerExceptionCatch()
     {
+        /** 设置捕获方法，是个静态方法，并且不能是个空方法，否则会报错 */
         set_exception_handler(array('Engine\Libary\Engine', 'defineExceptionCatch'));
     }
 
@@ -123,8 +124,8 @@ final class Engine
      * @desc 异常函数 - 定义异常捕获函数
      * @param Exception $exception
      */
-    public function defineExceptionCatch(Exception $exception)
+    public static function defineExceptionCatch(Exception $exception)
     {
-
+        var_dump($exception);
     }
 }
