@@ -6,7 +6,9 @@
  * Desc:      测试控制器
  *******************************************************************************/
 
-class TestController
+use Engine\Base\BaseController;
+
+class TestController extends BaseController
 {
     public function connectRedis()
     {
@@ -29,5 +31,10 @@ class TestController
                 'del_result' => $del_rel
             ));
         }
+    }
+
+    public function getMethodName()
+    {
+        var_dump(__METHOD__);
     }
 }

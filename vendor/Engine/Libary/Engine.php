@@ -9,6 +9,7 @@
 namespace Engine\Libary;
 
 use Engine\Base\EmptyController;
+use Engine\Behavior\FileLog;
 use Engine\Common\RequestFunction;
 use Engine\Conf\SystemConf;
 use Exception;
@@ -36,7 +37,7 @@ final class Engine
     /** @var string 方法名 */
     protected $action = '';
 
-    public function __construct($project_root_directory = '')
+    public function __construct($project_root_directory)
     {
         if (is_dir($project_root_directory)) {
             $this->project_root_directory = $project_root_directory;
@@ -48,6 +49,11 @@ final class Engine
         } else {
             date_default_timezone_set(SystemConf::SystemDefaultConf()['SystemDefaultConf']);
         }
+
+        /** 初始化日志所在工程的根目录 */
+        FileLog::setProjectRootDirectory($project_root_directory);
+
+        echo FileLog::getProjectRootDirectory();
     }
 
     /**

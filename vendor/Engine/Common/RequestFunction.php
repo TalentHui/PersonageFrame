@@ -130,7 +130,7 @@ class RequestFunction
     public static function isLinuxSystemOfServer()
     {
         return array(
-            'status' => strstr(PHP_OS, 'WIN') ? true : false,
+            'status' => strstr(PHP_OS, 'WIN') ? false : true,
             'details' => PHP_OS
         );
     }
