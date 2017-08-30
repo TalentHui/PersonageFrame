@@ -39,21 +39,30 @@ final class Engine
 
     public function __construct($project_root_directory)
     {
+        /** step-1: 设置项目根目录 */
         if (is_dir($project_root_directory)) {
             $this->project_root_directory = $project_root_directory;
         }
 
-        /** 设置时区 */
+        /** step-2: 设置时区 */
         if (empty(SystemConf::SystemDefaultConf()['SystemDefaultConf'])) {
             date_default_timezone_set('Asia/Shanghai');
         } else {
             date_default_timezone_set(SystemConf::SystemDefaultConf()['SystemDefaultConf']);
         }
 
-        /** 初始化日志所在工程的根目录 */
-        FileLog::setProjectRootDirectory($project_root_directory);
+        /** step-3: 设置错误提示 */
+        if (SystemConf::SystemDefaultConf()['open_error_flush']) {
+            error_reporting(E_ALL);
+        } else {
+            error_reporting(0);
+        }
 
-        echo FileLog::getProjectRootDirectory();
+        /** step-4: 注册异常处理 */
+        $this->registerExceptionCatch();
+
+        /** step-5: 初始化日志所在工程的根目录 */
+        FileLog::setProjectRootDirectory($project_root_directory);
     }
 
     /**
@@ -61,16 +70,15 @@ final class Engine
      */
     public function run()
     {
-        /** step-1: 注册异常处理 */
-        $this->registerExceptionCatch();
+        FileLog::init(__METHOD__);
 
-        /** step-2: 实例参数对象 */
+        /** step-1: 实例参数对象 */
         $this->instantiationParamModel();
 
-        /** step-3: 加载模板对象 */
+        /** step-1: 加载模板对象 */
         $this->dispatcher = new Dispatcher($this->project_root_directory);
 
-        /** step-4: 加载-控制器-方法 */
+        /** step-1: 加载-控制器-方法 */
         $this->load_controller_action();
         $this->run_controller_action();
     }
@@ -102,7 +110,7 @@ final class Engine
     protected function run_controller_action()
     {
         $controller = $this->controller ? $this->controller : SystemConf::SystemDefaultConf()['default_controller'];
-        $controller_file_path =  rtrim($this->project_root_directory, '\\/') . DIRECTORY_SEPARATOR . trim(SystemConf::SystemDefaultConf()['default_controller_path'], '.\\/') . DIRECTORY_SEPARATOR . $controller . '.php';
+        $controller_file_path = rtrim($this->project_root_directory, '\\/') . DIRECTORY_SEPARATOR . trim(SystemConf::SystemDefaultConf()['default_controller_path'], '.\\/') . DIRECTORY_SEPARATOR . $controller . '.php';
 
         if (file_exists($controller_file_path)) {
 
@@ -122,16 +130,73 @@ final class Engine
      */
     protected function registerExceptionCatch()
     {
-        /** 设置捕获方法，是个静态方法，并且不能是个空方法，否则会报错 */
+        /** 设置用户自定义的错误处理程序，是个静态方法，并且不能是个空方法，否则会报错。好处：脚本会在此异常处理程序被调用后停止执行 */
         set_exception_handler(array('Engine\Libary\Engine', 'defineExceptionCatch'));
+
+        /** 设置用户自定义的错误处理程序，然后触发错误（通过 trigger_error()） - php版本小于7时 */
+        if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+            set_error_handler(array('Engine\Libary\Engine', 'myErrorHandler'));
+        }
+
+        /** 好处: catch the fatal errors */
+        register_shutdown_function(array('Engine\Libary\Engine', 'defineShutdownCatch'));
     }
 
     /**
-     * @desc 异常函数 - 定义异常捕获函数
+     * @desc 异常函数 - 定义异常捕获函数 - php7.0
      * @param Exception $exception
      */
     public static function defineExceptionCatch(Exception $exception)
     {
-        var_dump($exception);
+        $message = $exception->getMessage();
+        $file = $exception->getFile();
+        $line = $exception->getLine();
+        $trace = $exception->getTraceAsString();
+
+        $error_info = array(
+            'message' => $message,
+            'line' => $line,
+            'file' => $file,
+            'trace' => $trace
+        );
+
+        Filelog::logFatal($error_info);
+
+        /** 将buffer中日志刷入文件 */
+        fileLog::flushLog();
+    }
+
+    /**
+     * @desc 异常函数 - 定义异常捕获函数 - php7.0
+     * @param $errno
+     * @param $errstr
+     * @param $errfile
+     * @param $errline
+     */
+    public static function myErrorHandler($errno, $errstr, $errfile, $errline)
+    {
+        $error_info = array(
+            'errfile' => $errfile,
+            'errline' => $errline,
+            'errno' => $errno,
+            'errstr' => $errstr
+        );
+
+        Filelog::logFatal($error_info);
+
+        /** 将buffer中日志刷入文件 */
+        fileLog::flushLog();
+    }
+
+    /**
+     * @desc Catch Fatal Errors in PHP
+     */
+    public static function defineShutdownCatch()
+    {
+        $last_error = error_get_last();
+        Filelog::logFatal($last_error);
+
+        /** 将Fatal Errors刷入文件 */
+        fileLog::flushLog();
     }
 }

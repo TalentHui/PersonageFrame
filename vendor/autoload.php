@@ -52,7 +52,7 @@ class autoload
      * @param string $use_class_by_namespace
      * @return string
      */
-    public static function findClassFile($use_class_by_namespace ='')
+    public static function findClassFile($use_class_by_namespace = '')
     {
         /** step-1: 命名空间是通过 \ 做分割符的, 将 \ 替换成 / 表示路径 */
         $use_class_by_namespace = str_replace('\\', '/', $use_class_by_namespace);
@@ -68,7 +68,7 @@ class autoload
             $need_load_class_path = self::$class_root_directory['vendor'] . trim($use_class_directory, '/') . DIRECTORY_SEPARATOR . $use_class_basename . '.php';
         }
 
-        /** step-3: 将路径中 \ 替换成 / */
+        /** step-4: 将路径中 \ 替换成 / */
         $need_load_class_path = strval(str_replace('\\', '/', $need_load_class_path));
 
         return $need_load_class_path;
