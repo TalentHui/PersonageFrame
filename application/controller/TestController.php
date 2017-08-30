@@ -51,4 +51,9 @@ class TestController extends BaseController
         $result = $get_mongo_collect_obj->insert($info);
         var_dump($result);
     }
+
+    public function connectSql()
+    {
+
+    }
 }
