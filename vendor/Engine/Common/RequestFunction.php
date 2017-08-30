@@ -26,10 +26,10 @@ class RequestFunction
 
     /**
      * @desc   通过 curl 发送 post 请求
-     * @param  string $url     请求的Url路径
-     * @param  array  $data    POST参数
-     * @param  int    $timeout 超时处理
-     * @param  bool   $CA      是否验证CA
+     * @param  string $url 请求的Url路径
+     * @param  array $data POST参数
+     * @param  int $timeout 超时处理
+     * @param  bool $CA 是否验证CA
      * @param  string $ca_file CA证书的存放位置
      * @return mixed
      */
