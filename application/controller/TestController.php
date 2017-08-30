@@ -32,9 +32,4 @@ class TestController extends BaseController
             ));
         }
     }
-
-    public function getMethodName()
-    {
-        var_dump(__METHOD__);
-    }
 }

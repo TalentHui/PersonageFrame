@@ -14,7 +14,7 @@ use Engine\Common\RequestFunction;
 class FileLog
 {
     /** 日志文件名模板 第一个%s 日志前缀 第二个%s 日期 */
-    const LOG_FILE_NAME_MODEL = '%s_log_%s.log';
+    const LOG_FILE_NAME_MODEL_DAILY = '%s_log_%s.log';
 
     /**
      * @desc 错误信息列表
@@ -54,6 +54,9 @@ class FileLog
     /** @var bool 日志输出状态 */
     public static $log_output_status = false;
 
+    /** @var int buffer行数 */
+    public static $log_buffer_length;
+
     /** @var bool 初始化状态 */
     public static $init_status = false;
 
@@ -62,6 +65,8 @@ class FileLog
         'log_dt' => '',
         'content' => array(),
     );
+
+    public static $log_buffer = [];
 
     /**
      * @desc  设置工程的根目录
@@ -83,10 +88,11 @@ class FileLog
 
     /**
      * @desc  日志类初始化
-     * @param string $log_flag 日志文件名前缀(建议使用__CLASS__做前缀，类似 TestController::getMethodName)
+     * @param string $log_flag 日志文件名前缀(建议使用__METHOD__做前缀，类似 TestController::getMethodName)
      * @param bool $output_log_status 日志输出状态，默认false  false 不输出 true 输出
+     * @param int $buffer_length buff行数
      */
-    public static function init($log_flag = '', $output_log_status = false)
+    public static function init($log_flag = '', $output_log_status = false, $buffer_length = 1)
     {
         /** @var array $get_server_system_type 获取服务器操作系统类型 */
         $get_server_system_type = RequestFunction::isLinuxSystemOfServer();
@@ -104,6 +110,7 @@ class FileLog
         }
 
         self::$init_status = true;
+        self::$log_buffer_length = $buffer_length;
     }
 
     /**
@@ -124,11 +131,11 @@ class FileLog
         $formatter_linux_time = date('Ymd', time());
 
         if (self::$server_system_is_linux) {
-            return sprintf(self::LOG_FILE_NAME_MODEL, self::$log_file_flag, $formatter_linux_time);
+            return sprintf(self::LOG_FILE_NAME_MODEL_DAILY, self::$log_file_flag, $formatter_linux_time);
         }
 
-        $process_flag_of_windows = str_replace('::', '_', self::$log_file_flag);
-        return sprintf(self::LOG_FILE_NAME_MODEL, $process_flag_of_windows, $formatter_linux_time);
+        $process_flag_of_windows = str_replace(array('::', '\\', '/'), array('_', '.', '.'), self::$log_file_flag);
+        return sprintf(self::LOG_FILE_NAME_MODEL_DAILY, $process_flag_of_windows, $formatter_linux_time);
     }
 
     /**
@@ -138,7 +145,64 @@ class FileLog
      */
     public static function logs($log_type, $contents)
     {
+        self::$current_log['log_type'] = $log_type;
+        self::$current_log['log_dt'] = date('Y/m/d H:i:s', time());
 
+        if (!empty($contents)) {
+            self::append($contents);
+        }
+
+        self::$log_buffer[] = self::$current_log;
+        self::$current_log = [];
+
+        if (count(self::$log_buffer) >= self::$log_buffer_length) {
+            self::flushLog();
+        }
+    }
+
+    /**
+     * 在当前行追加日志
+     * @param mixed $log_info 日志内容
+     */
+    public static function append($log_info)
+    {
+        if (is_string($log_info)) {
+            self::$current_log['content'][] = $log_info;
+        } else if (is_array($log_info)) {
+
+            foreach ($log_info as $key_name => $key_value) {
+
+                if (is_null($key_value)) {
+                    $key_value = 'null';
+                }
+
+                if (!is_numeric($key_value) && !is_string($key_value)) {
+                    $key_value = json_encode($key_value);
+                }
+
+                self::$current_log['content'][] = $key_name . ' ' . $key_value;
+            }
+        }
+    }
+
+    public static function flushLog()
+    {
+        $write_content = '';
+
+        foreach (self::$log_buffer as $log_info) {
+
+            if (empty($log_info['content'])) {
+
+                $log_info['content'] = array();
+                continue;
+            }
+
+            $write_content .= $log_info['log_dt'] . ' ' . $log_info['log_type'] . ' ' . implode($log_info['content'], ' ') . ' ' . self::infoString() . PHP_EOL;
+        }
+
+        self::$log_buffer = [];
+        $file_name = self::$project_root_directory . DIRECTORY_SEPARATOR . self::$save_log_directory_name . DIRECTORY_SEPARATOR . self::getLogFileName();
+        file_put_contents($file_name, $write_content, FILE_APPEND);
     }
 
     /**
@@ -181,10 +245,74 @@ class FileLog
     }
 
     /**
-     * sql级别日志记录
+     * OUTPUT级别日志记录
      * @param string|array $contents 日志内容
      */
-    public static function log_sql($contents){
+    public static function logOutput($contents)
+    {
+        self::logs(self::OUTPUT, $contents);
+    }
+
+    /**
+     * FATAL级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logFatal($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_FATAL'], $contents);
+    }
+
+    /**
+     * AlERT级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logAlert($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_ALERT'], $contents);
+    }
+
+    /**
+     * ERR级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logErr($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_ERR'], $contents);
+    }
+
+    /**
+     * WARNING级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logWarning($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_WARNING'], $contents);
+    }
+
+    /**
+     * NOTICE级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logNotice($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_NOTICE'], $contents);
+    }
+
+    /**
+     * DEBUG级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logDebug($contents)
+    {
+        self::logs(self::ERROR_LIST['ERROR_DEBUG'], $contents);
+    }
+
+    /**
+     * SQL级别日志记录
+     * @param string|array $contents 日志内容
+     */
+    public static function logSql($contents)
+    {
         self::logs(self::ERROR_LIST['ERROR_SQL'], $contents);
     }
 }
