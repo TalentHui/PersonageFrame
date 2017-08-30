@@ -32,4 +32,23 @@ class TestController extends BaseController
             ));
         }
     }
+
+    public function connectMongo()
+    {
+        $mongo = new \Engine\DB\MongoDbPHP5(\Config\MongoConf::localhostMongoConf());
+
+        $db_name = 'db_test';
+        $table_name = 'table_test';
+
+        $get_mongo_collect_obj = $mongo->selectCollection($table_name, $db_name);
+
+        $info = array(
+            'name' => 'hui',
+            'age' => '24',
+            'sex' => 1
+        );
+
+        $result = $get_mongo_collect_obj->insert($info);
+        var_dump($result);
+    }
 }
