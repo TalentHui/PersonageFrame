@@ -7,7 +7,7 @@
  *            远程连接Mysql指定ip和端口：mysql -u root -p -h 10.154.0.43 -P 3341
  *******************************************************************************/
 
-namespace Config;
+namespace Example\Config;
 
 
 class SqlConf

@@ -8,7 +8,7 @@
  *            主库 master 用于写， 从库 slave 用于读
  *******************************************************************************/
 
-namespace Config;
+namespace Example\Config;
 
 
 class RedisConf

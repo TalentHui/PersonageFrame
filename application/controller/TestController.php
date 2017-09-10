@@ -35,7 +35,7 @@ class TestController extends BaseController
 
     public function connectMongo()
     {
-        $mongo = new \Engine\DB\MongoDbPHP5(\Config\MongoConf::localhostMongoConf());
+        $mongo = new \Engine\DB\MongoDbPHP5(\Example\Config\MongoConf::localhostMongoConf());
 
         $db_name = 'db_test';
         $table_name = 'table_test';
