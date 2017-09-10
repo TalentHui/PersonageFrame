@@ -27,6 +27,15 @@ class RedisPool
     }
 
     /**
+     * @desc   获取redis池子
+     * @return PHPRedis[]
+     */
+    public static function getRedisPool()
+    {
+        return self::$redis_pool;
+    }
+
+    /**
      * @desc  从链接池中销毁特定redis对象
      * @param array $redis_conf
      * @return bool

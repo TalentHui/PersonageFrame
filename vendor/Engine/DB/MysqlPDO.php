@@ -102,7 +102,7 @@ class MysqlPDO
     /**
      * @desc 获取dsn模板
      */
-    protected function getDsnModel()
+    public function getDsnModel()
     {
         return sprintf(strtolower($this->dsn_model), $this->connect_sql_type, $this->connect_host_address, $this->connect_host_port, $this->connect_db_name);
     }
@@ -179,8 +179,8 @@ class MysqlPDO
     }
 
     /**
-     * @desc  在一个单独的函数调用中执行一条 SQL 语句，返回受此语句影响的行数。
-     * @param string $sql
+     * @desc   在一个单独的函数调用中执行一条 SQL 语句，返回受此语句影响的行数。
+     * @param  string $sql
      * @return int
      */
     public function pdoExec($sql = '')
@@ -189,8 +189,8 @@ class MysqlPDO
     }
 
     /**
-     * @desc  返回PDOStatement对象,可以理解为结果集，成功返回PDOStatement对象，如果失败返回 FALSE
-     * @param $sql
+     * @desc   返回PDOStatement对象,可以理解为结果集，成功返回PDOStatement对象，如果失败返回 FALSE
+     * @param  $sql
      * @return \PDOStatement | false
      * @notice 结果集当作二维数组，遍历输出
      */
@@ -216,7 +216,7 @@ class MysqlPDO
     }
 
     /**
-     * @desc 返回一个表示最后插入数据库那一行的行ID的字符串
+     * @desc   返回一个表示最后插入数据库那一行的行ID的字符串
      * @return string
      */
     public function getPdoLastInsertId()
