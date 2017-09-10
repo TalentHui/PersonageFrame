@@ -23,7 +23,7 @@ class SystemConf
             'default_controller' => 'Index',                                                                            // 默认控制器
             'default_action' => 'run',                                                                                  // 默认方法
 
-            'open_error_flush' => false,                                                                                // 开启错误输出 true 开启 false 关闭
+            'open_error_flush' => true,                                                                                // 开启错误输出 true 开启 false 关闭
         );
     }
 }

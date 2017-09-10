@@ -9,8 +9,8 @@
 namespace Handler;
 
 
+use Config\Example\RedisConf;
 use Engine\DB\RedisPool;
-use Example\Config\RedisConf;
 
 class RedisHandler
 {

@@ -6,7 +6,7 @@
  * Desc:      mongo 配置
  *******************************************************************************/
 
-namespace Example\Config;
+namespace Config\Example;
 
 
 class MongoConf

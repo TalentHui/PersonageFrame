@@ -10,5 +10,17 @@ use Engine\Base\BaseController;
 
 class TestController extends BaseController
 {
+    public function redisExample()
+    {
+        $redis = \Handler\RedisHandler::LocationRedisHandler();
+        var_dump($redis->getRedisObject()->keys('*'));
+    }
 
+    public function mysqlExample()
+    {
+        $mysql = \Handler\MysqlHandler::LocationMysqlHandler();
+        $mysql->pdoQuery(\Engine\Behavior\SqlBaseCommand::DatabasesShowAll());
+        $rel = $mysql->getPdoSqlRelFetchAll();
+        var_dump($rel);
+    }
 }
