@@ -25,7 +25,7 @@ class SqlBaseCommand
     const sql_database_show = 'show databases';
 
     /** 创建一个数据库 */
-    const sql_database_create = 'create database %s';
+    const sql_database_create = 'create database if not exists %s';
 
     /** 选择一个数据库 */
     const sql_database_select = 'use %s';
@@ -46,14 +46,38 @@ class SqlBaseCommand
         'describe %s'
     );
 
-    /** 给表重命名 */
-    const sql_table_rename = 'alter table %s rename %s';
+    /** 查看表的创建语句 */
+    const sql_show_table_create_sentence = 'show create table %s';
 
     /** 清空表结构 notice: 主键从1开始 */
     const sql_table_truncate = 'truncate table %s';
 
-    /** 查看表的创建语句 */
-    const show_table_create_sentence = 'show create table %s';
+    /** 给表重命名 */
+    const sql_table_rename = 'alter table %s rename %s';
+
+    /** 查看表索引 */
+    const sql_index_show_all = array(
+        'show index from %s',
+        'show keys from %s'
+    );
+
+    /** 添加主键索引 - 支持联合索引 */
+    const sql_index_add_primary = 'alter table `%s` add primary key (%s)';
+
+    /** 添加唯一索引 - 支持联合索引 */
+    const sql_index_add_unique = 'alter table `%s` add unique %s(%s)';
+
+    /** 添加普通索引 - 支持联合索引 */
+    const sql_index_add_index = 'alter table `%s` add index %s(%s)';
+
+    /** 添加全文索引 - 支持联合索引 */
+    const sql_index_add_fulltext = 'alter table `%s` add fulltext(%s)';
+
+    /** 删除主键索引 */
+    const sql_index_drop_primary = 'alter table %s drop primary key';
+
+    /** 删除非主键索引 */
+    const sql_index_drop_index_and_unique = 'alter table %s drop index %s';
 
     /** 添加列 @example alter table 表名 add 字段名 字段属性 after 欲在哪个字段后加入 */
     const sql_column_add = 'alter table %s add %s %s after %s';
@@ -139,17 +163,6 @@ class SqlBaseCommand
     }
 
     /**
-     * @desc   给表重命名
-     * @param  $old_name
-     * @param  $new_name
-     * @return string
-     */
-    public static function TableRename($old_name, $new_name)
-    {
-        return sprintf(self::sql_table_rename, $old_name, $new_name);
-    }
-
-    /**
      * @desc   清空表数据
      * @param  $table_name
      * @return string
@@ -166,7 +179,100 @@ class SqlBaseCommand
      */
     public static function TableShowCreateSentence($table_name)
     {
-        return sprintf(self::show_table_create_sentence, $table_name);
+        return sprintf(self::sql_show_table_create_sentence, $table_name);
+    }
+
+    /**
+     * @desc   给表重命名
+     * @param  $old_name
+     * @param  $new_name
+     * @return string
+     */
+    public static function TableRename($old_name, $new_name)
+    {
+        return sprintf(self::sql_table_rename, $old_name, $new_name);
+    }
+
+    /**
+     * @desc   展示表的所有索引
+     * @param  string $table_name 表名
+     * @param  int $show_type
+     * @return string
+     */
+    public static function index_show_all($table_name, $show_type = 0)
+    {
+        if (empty(self::sql_index_show_all[$show_type])) {
+            $show_type = 0;
+        }
+
+        return sprintf(self::sql_index_show_all[$show_type], $table_name);
+    }
+
+    /**
+     * @desc   添加主键索引 - 支持联合索引
+     * @param  string $table_name 表明
+     * @param  array $field_list 字段名列表
+     * @return string
+     */
+    public static function index_add_primary($table_name, array $field_list = array())
+    {
+        return sprintf(self::sql_index_add_primary, $table_name, implode(',', $field_list));
+    }
+
+    /**
+     * @desc   添加唯一索引 - 支持联合索引
+     * @param  string $table_name 表明
+     * @param  string $index_name 索引名
+     * @param  array $field_list 字段名列表
+     * @return string
+     */
+    public static function index_add_unique($table_name, $index_name, $field_list = array())
+    {
+        return sprintf(self::sql_index_add_unique, $table_name, $index_name, implode(',', $field_list));
+    }
+
+    /**
+     * @desc   添加普通索引 - 支持联合索引
+     * @param  string $table_name 表明
+     * @param  string $index_name 索引名
+     * @param  array $field_list 字段名列表
+     * @return string
+     */
+    public static function index_add_index($table_name, $index_name, $field_list = array())
+    {
+        return sprintf(self::sql_index_add_index, $table_name, $index_name, implode(',', $field_list));
+    }
+
+    /**
+     * @desc   添加全文索引 - 支持联合索引
+     * @param  string $table_name 表明
+     * @param  array $field_list 字段名列表
+     * @return string
+     */
+    public static function index_add_fulltext($table_name, array $field_list = array())
+    {
+        return sprintf(self::sql_index_add_fulltext, $table_name, implode(',', $field_list));
+    }
+
+    /**
+     * @desc   删除主键索引
+     * @param  string $table_name 表明
+     * @return string
+     */
+    public static function index_drop_primary($table_name)
+    {
+        return sprintf(self::sql_index_drop_primary, $table_name);
+    }
+
+    /**
+     * @desc   刪除普通索引和唯一索引
+     * @param  string $table_name 表明
+     * @param  string $index_name 索引名
+     * @return string
+     */
+    public static function index_drop_index_and_unique($table_name, $index_name)
+    {
+        return sprintf(self::sql_index_drop_index_and_unique, $table_name, $index_name);
     }
 
     /**

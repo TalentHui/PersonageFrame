@@ -23,4 +23,9 @@ class TestController extends BaseController
         $rel = $mysql->getPdoSqlRelFetchAll();
         var_dump($rel);
     }
+
+    public function createCreate()
+    {
+        echo iconv('utf-8', 'gbk', \Engine\Behavior\CreateMySQL::MySQLDataType());
+    }
 }
