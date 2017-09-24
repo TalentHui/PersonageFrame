@@ -43,7 +43,7 @@
 
 * 例如：
 
-
+```
     <?php
     // PHP 5.3及以后版本的写法
     namespace Vendor\Model;
@@ -51,15 +51,17 @@
     class Foo
     {
     }
+```
     
 *5.2.x 及之前的版本 应该 使用伪命名空间的写法，约定俗成使用顶级的组织名称（vendor name）如 Vendor_ 为类前缀。
 
-
+```
     <?php
     // 5.2.x及之前版本的写法
     class Vendor_Model_Foo
     {
     }
+```
     
 ##### 4. 类的常量、属性和方法
 
@@ -71,7 +73,7 @@
 
 * 参照以下代码：
 
-
+```
      <?php
     namespace Vendor\Model;
     
@@ -80,7 +82,7 @@
         const VERSION = '1.0';
         const DATE_APPROVED = '2012-06-01';
     }
-
+```
     
 ##### 4.2. 属性
 
