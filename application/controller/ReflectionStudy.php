@@ -1,4 +1,7 @@
 <?php
+
+use Engine\Base\BaseController;
+
 /********************************************************************************
  * Copyright: FreeWorld - PhpStorm - PersonageFrame - ReflectionStudy.php
  * Author:    吴辉
@@ -6,7 +9,7 @@
  * Desc:      反射类学习
  *******************************************************************************/
 
-class ReflectionStudy
+class ReflectionStudy extends BaseController
 {
     /**
      * @desc 获取一个类的有关信息
