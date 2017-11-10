@@ -79,4 +79,46 @@ class StringStudy extends BaseController
 
         wordwrap('wo shi yi ge bing', 10);       // 文本在特定长度处自动换行(按照每行10个字符来自动将文本换行)
     }
+
+    /**
+     * @desc 读取post请求的主体
+     */
+    public function readPostRequestMainContent()
+    {
+        /** 方案一: （建议） */
+        file_get_contents('php://input');
+
+        /** 方案二: */
+        $fp = fopen('php://input', 'r');
+        fread($fp, 1024);
+        fclose($fp);
+    }
+
+    /**
+     * @desc 使用HTTP的基本或摘要认真
+     */
+    public function httpBaseAuth()
+    {
+        $user = $_SERVER['PHP_AUTH_USER'];    // 用户名
+        $pass = $_SERVER['PHP_AUTH_PW'];      // 密码
+
+        /** 实施基本认证 */
+        if (empty($user) || empty($pass)) {
+            header('WWW-Authenticate: Basic realm="My Website"');
+            header('HTTP/1.0 401 Unauthorized');
+            echo "You need to enter a valid user ans password";
+            exit();
+        }
+    }
+
+    /**
+     * @desc 把输出冲刷 (Flushing) 到浏览器
+     */
+    public function flushingToBrowser()
+    {
+        /** 强制让IE立即显示内容 */
+        echo str_repeat(' ', 300);             // 把字符串重复指定的次数
+        echo 'Finding identical snowflakes';
+        flush();
+    }
 }
