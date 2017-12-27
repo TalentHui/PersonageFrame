@@ -18,7 +18,6 @@ class StringFunction
      */
     public static function stringExchangeNumber($string)
     {
-
         /**
          * crc32() 函数计算字符串的 32 位 CRC（循环冗余校验）。
          *

@@ -89,7 +89,7 @@ class SqlBaseCommand
     const sql_column_modify = 'alter table %s change %s %s %s';
 
     /**
-     * @desc   显示所有的数据库命令
+     * @desc   显示所有的数据库
      * @return string
      */
     public static function DatabasesShowAll()

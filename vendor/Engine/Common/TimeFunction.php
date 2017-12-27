@@ -23,7 +23,6 @@ class TimeFunction
         $date = $_SERVER['REQUEST_TIME'] + 86400;
 
         if (!empty($time)) {
-
             $date = $time;
         }
 
