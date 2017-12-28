@@ -16,8 +16,8 @@
     <script src="/expand/jquery-3.2.1.min.js" type="application/javascript"></script>
     <script src="/expand/Bootstrap3.3.7/js/bootstrap.js" type="application/javascript"></script>
 </head>
-<body>
-    <nav class="navbar navbar-default">
+<body class="alert-success">
+    <nav class="navbar navbar-default alert alert-success">
         <form class="navbar-form navbar-left">
             <div class="form-group">
                 <label>Controller</label>
@@ -27,20 +27,32 @@
                 <label>Action</label>
                 <input type="text" class="form-control" id="action_name" value="processEChartsView" placeholder="Action Name">
             </div>
-            <a href="#" class="btn btn-default" role="button" id="get_data_button">Button</a>
+            <a href="#" class="btn btn-default" role="button" id="get_data_button">GO</a>
         </form>
     </nav>
     <div class="container-fluid">
         <div class="col-xs-12 col-sm-12 col-md-12">
-            <div id="main" class="row" style="height: 600px"></div>
+            <div class="panel panel-success">
+                <div id="main" class="row" style="height: 400px; margin: 10px 20px;"></div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12">
+            <div class="panel panel panel-success">
+                <!-- Panel -->
+                <div class="panel-body table-responsive" id="ECharts_Data_Tab">
+
+                </div>
+            </div>
         </div>
     </div>
 </body>
 <!-- 引入ECharts文件 -->
 <script src="/expand/ECharts/dist/echarts-all.js"></script>
+<script src="/expand/ECharts/mon.js"></script>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts图表
-    var myChart = echarts.init(document.getElementById('main'));
+    var myChart = echarts.init(document.getElementById('main'), 'mon');
 
     // 组装 ECharts Option 数据
     function Set_option(Request_Data) {
@@ -57,6 +69,11 @@
                 }
             },
             legend: {
+                backgroundColor: '#eee',
+                borderColor: 'rgba(178,34,34,0.8)',
+                padding: 5,
+                itemGap: 20,
+                textStyle: {color: 'red'},
                 data: Request_Data['legend']['data']
             },
             toolbox: {
@@ -130,6 +147,39 @@
         return option;
     }
 
+    // 图表数据展示块
+    function ECharts_Data_Show_Div(Data) {
+        var ECharts_Data_Tab_Div = $('#ECharts_Data_Tab');
+        ECharts_Data_Tab_Div.html('');
+
+        // 类型
+        var tab_item = '<table class="table .table-bordered">';
+        tab_item += '<tr>';
+        tab_item += '<td>类型</td>';
+
+        for (var i in Data['legend']['data']) {
+            tab_item += '<td>' + Data['legend']['data'][i] + '</td>';
+        }
+
+        tab_item += '</tr>';
+
+        // 数据
+        for (var x_item in Data['xAxis']['data']) {
+            tab_item += '<tr>';
+            tab_item += '<td>' + Data['xAxis']['data'][x_item] + '</td>';
+
+            for (var re_i in Data['legend']['data']) {
+                tab_item += '<td>' + Data['series'][re_i]['data'][x_item] + '</td>';
+            }
+
+            tab_item += '</tr>';
+        }
+
+        tab_item += '</table>';
+
+        ECharts_Data_Tab_Div.append(tab_item);
+    }
+
     // 发送Ajax请求，初始化数据表
     function Init_Data_function(controller_name, action_name) {
         controller_name = arguments[0] ? arguments['0'] : 'ViewController';
@@ -146,6 +196,7 @@
 
                 if (parseInt(result['status']) === 200) {
                     Init_Data = result['data'];
+                    ECharts_Data_Show_Div(Init_Data);
                 }
 
                 // 为echarts对象加载数据
@@ -155,7 +206,7 @@
                 console.log('Ajax Request Error')
             },
             complete: function () {
-                console.log('Ajax Finish')
+
             }
         });
     }
