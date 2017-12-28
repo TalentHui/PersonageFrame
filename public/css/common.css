@@ -1,0 +1,7 @@
+.footer, .footer a:link, .footer a:visited {
+    clear: both;
+    text-align: center;
+    color: #999;
+    font: 12px/1.5 Arial;
+    white-space: nowrap
+}

@@ -1,13 +1,12 @@
 <?php
-
-use Engine\Base\BaseController;
-
 /********************************************************************************
  * Copyright: FreeWorld - PhpStorm - PersonageFrame - StringStudy.php
  * Author:    吴辉
  * Date:      2017-10-23 23:16
  * Desc:      File Description
  *******************************************************************************/
+
+use Engine\Base\BaseController;
 
 class StringStudy extends BaseController
 {

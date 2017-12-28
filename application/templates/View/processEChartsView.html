@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ECharts - 数据辅助视图</title>
+    <!--载入ICON-->
+    <link rel="shortcut icon" href="/img/icon/favicon.png">
+    <!--载入CSS文件-->
+    <!--<link rel="stylesheet" href="/css/common.css">-->
+    <!--载入JS文件-->
+    <!--<script src="/js/common.js"></script>-->
+    <!--CSS 文件-->
+    <link rel="stylesheet" href="/expand/Bootstrap3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/expand/Bootstrap3.3.7/css/bootstrap-theme.css">
+    <!--JS  文件-->
+    <script src="/expand/jquery-3.2.1.min.js" type="application/javascript"></script>
+    <script src="/expand/Bootstrap3.3.7/js/bootstrap.js" type="application/javascript"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <form class="navbar-form navbar-left">
+            <div class="form-group">
+                <label>Controller</label>
+                <input type="text" class="form-control" id="controller_name" value="ViewController" placeholder="Controller Name">
+            </div>
+            <div class="form-group">
+                <label>Action</label>
+                <input type="text" class="form-control" id="action_name" value="processEChartsView" placeholder="Action Name">
+            </div>
+            <a href="#" class="btn btn-default" role="button" id="get_data_button">Button</a>
+        </form>
+    </nav>
+    <div class="container-fluid">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div id="main" class="row" style="height: 600px"></div>
+        </div>
+    </div>
+</body>
+<!-- 引入ECharts文件 -->
+<script src="/expand/ECharts/dist/echarts-all.js"></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts图表
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 组装 ECharts Option 数据
+    function Set_option(Request_Data) {
+        var option = {
+            title : {
+                text: Request_Data['title']['text'],
+                subtext: Request_Data['title']['subtext']
+            },
+            tooltip: {
+                show: true,
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: Request_Data['legend']['data']
+            },
+            toolbox: {
+                show : true,
+                orient: 'horizontal',                                   // 布局方式，默认为水平布局，可选为：
+                                                                        // 'horizontal' ¦ 'vertical'
+                x: 'right',                                             // 水平安放位置，默认为全图右对齐，可选为：
+                                                                        // 'center' ¦ 'left' ¦ 'right'
+                                                                        // ¦ {number}（x坐标，单位px）
+                y: 'top',                                               // 垂直安放位置，默认为全图顶端，可选为：
+                                                                        // 'top' ¦ 'bottom' ¦ 'center'
+                                                                        // ¦ {number}（y坐标，单位px）
+                color : ['#1e90ff','#22bb22','#4b0082','#d2691e'],
+                backgroundColor: 'rgba(0,0,0,0)',                       // 工具箱背景颜色
+                borderColor: '#ccc',                                    // 工具箱边框颜色
+                borderWidth: 0,                                         // 工具箱边框线宽，单位px，默认为0（无边框）
+                padding: 5,                                             // 工具箱内边距，单位px，默认各方向内边距为5，
+                showTitle: true,
+                feature : {
+                    mark : {
+                        show : true,
+                        title : {
+                            mark : '辅助线-开关',
+                            markUndo : '辅助线-删除',
+                            markClear : '辅助线-清空'
+                        },
+                        lineStyle : {
+                            width : 1,
+                            color : '#1e90ff',
+                            type : 'dashed'
+                        }
+                    },
+                    dataZoom : {
+                        show : true,
+                        title : {
+                            dataZoom : '区域缩放',
+                            dataZoomReset : '区域缩放-后退'
+                        }
+                    },
+                    magicType: {
+                        show : true,
+                        title : {
+                            bar : '动态类型切换-柱形图',
+                            stack : '动态类型切换-堆积',
+                            tiled : '动态类型切换-平铺'
+                        },
+                        type : ['line', 'bar', 'stack', 'tiled']
+                    },
+                    restore : {
+                        show : true,
+                        title : '还原',
+                        color : 'black'
+                    },
+                    saveAsImage : {
+                        show : true,
+                        title : '保存为图片',
+                        type : 'jpeg',
+                        lang : ['点击本地保存']
+                    }
+                }
+            },
+            xAxis : Request_Data['xAxis'],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : Request_Data['series']
+        };
+
+        return option;
+    }
+
+    // 发送Ajax请求，初始化数据表
+    function Init_Data_function(controller_name, action_name) {
+        controller_name = arguments[0] ? arguments['0'] : 'ViewController';
+        action_name = arguments[1] ? arguments['1'] : 'processEChartsView';
+
+        $.ajax({
+            url: '/index.php/' + controller_name +'/' + action_name + '/',
+            data: {step: 'GetData'},
+            type: 'POST',
+            dataType: 'JSON',
+            timeout: 100,
+            success: function (result) {
+                var Init_Data = [];
+
+                if (parseInt(result['status']) === 200) {
+                    Init_Data = result['data'];
+                }
+
+                // 为echarts对象加载数据
+                myChart.setOption(Set_option(Init_Data));
+            },
+            error: function () {
+                console.log('Ajax Request Error')
+            },
+            complete: function () {
+                console.log('Ajax Finish')
+            }
+        });
+    }
+
+    Init_Data_function();
+
+    // 发送 ajax 请求
+    $('#get_data_button').on('click', function () {
+        var controller_name = $('#controller_name').val();
+        var action_name = $('#action_name').val();
+
+        Init_Data_function(controller_name, action_name)
+    });
+</script>
+</html>

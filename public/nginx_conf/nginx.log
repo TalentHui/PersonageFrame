@@ -1,0 +1,35 @@
+    server {
+        listen       80;
+        server_name  www.charts.com;
+        root         "D:\ProjectSpaces\sourceTree\PersonageFrame\public";
+        include      "D:\ProjectSpaces\sourceTree\PersonageFrame\public\.htaccess";
+
+        location / {
+            if (!-e $request_filename) {
+                rewrite ^/(.*)  /index.php/$1 last;
+            }
+
+            root     "D:\ProjectSpaces\sourceTree\PersonageFrame\public";
+            index    index.php index.html;
+        }
+
+        location ~ \.php {
+            root          "D:\ProjectSpaces\sourceTree\PersonageFrame\public";
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+            include       fastcgi_params;
+        }
+
+        location ~ .*.(htm|html|gif|jpg|jpeg|png|bmp|swf|ioc|rar|zip|txt|flv|mid|doc|ppt|pdf|xls|mp3|wma)$
+        {
+            root          "D:\ProjectSpaces\sourceTree\PersonageFrame\public";
+            autoindex     on;
+        }
+
+        location ~ .*.(js|css)?$
+        {
+            root          "D:\ProjectSpaces\sourceTree\PersonageFrame\public";
+            autoindex     on;
+        }
+    }

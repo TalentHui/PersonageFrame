@@ -1,13 +1,12 @@
 <?php
-
-use Engine\Base\BaseController;
-
 /********************************************************************************
  * Copyright: FreeWorld - PhpStorm - PersonageFrame - ReflectionStudy.php
  * Author:    吴辉
  * Date:      2017-10-22 17:48
  * Desc:      反射类学习
  *******************************************************************************/
+
+use Engine\Base\BaseController;
 
 class ReflectionStudy extends BaseController
 {
