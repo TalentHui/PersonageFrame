@@ -54,12 +54,12 @@ class FileFunction
 
     /**
      * @desc   读取文件 - CSV
-     * @param  string   $file_default_directory  文件目录
-     * @param  string   $file_name               要读区的文件名
-     * @param  array    $need_column_list        需要获取的列
-     * @param  string   $filter_string           需要过滤掉的元素
-     * @param  bool|int $filter_line             文件需要舍弃的前几行
-     * @param  string   $char
+     * @param  string $file_default_directory 文件目录
+     * @param  string $file_name 要读区的文件名
+     * @param  array $need_column_list 需要获取的列
+     * @param  string $filter_string 需要过滤掉的元素
+     * @param  bool|int $filter_line 文件需要舍弃的前几行
+     * @param  string $char
      * @return array
      */
     public static function readFileDataFromCsvFle($file_default_directory = '', $file_name = '', $need_column_list = array(), $filter_string = '', $filter_line = false, $char = ',')
@@ -136,8 +136,8 @@ class FileFunction
      * @desc  保存数据 - CSV
      * @param string $file_default_directory
      * @param string $file_name
-     * @param array  $title_array
-     * @param array  $content_array
+     * @param array $title_array
+     * @param array $content_array
      */
     public static function saveDataToCsvFile($file_default_directory = '', $file_name = '', array $title_array = array(), array $content_array = array())
     {
@@ -164,10 +164,10 @@ class FileFunction
 
     /**
      * @desc  保存数据 - 任何格式文件 默认 PHP
-     * @param string  $file_default_directory
-     * @param string  $file_name 文件名
-     * @param array   $pack_data 数据
-     * @param string  $file_ext 文件后缀名
+     * @param string $file_default_directory
+     * @param string $file_name 文件名
+     * @param array $pack_data 数据
+     * @param string $file_ext 文件后缀名
      */
     public static function exportDataToFile($file_default_directory = '', $file_name = '', array $pack_data = array(), $file_ext = 'php')
     {
@@ -177,11 +177,35 @@ class FileFunction
 
         if ($file_ext == 'php') {
             $text_content = '<?php' . PHP_EOL;
-            $text_content .= var_export($pack_data, true) . ';' . PHP_EOL .'?>';
+            $text_content .= var_export($pack_data, true) . ';' . PHP_EOL . '?>';
         } else {
             $text_content = is_array($pack_data) ? json_encode($pack_data) : $pack_data;
         }
 
         file_put_contents($save_file_path, $text_content);
+    }
+
+    /**
+     * @desc   获取远程url的内容
+     * @param  $url
+     * @return bool|mixed|string
+     */
+    public static function get_url_content($url)
+    {
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            $timeout = 5;
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+
+            $file_contents = curl_exec($ch);
+            curl_close($ch);
+        } else {
+            $file_contents = file_get_contents($url);
+        }
+
+        return $file_contents;
     }
 }

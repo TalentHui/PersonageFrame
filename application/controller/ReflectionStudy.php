@@ -98,7 +98,7 @@ class ReflectionStudy extends BaseController
         $get_pdo_connect_status_method = $reflection_class->getMethod('getPdoConnectStatus');   // 方法二
         var_dump($get_pdo_connect_status_method->invoke($instance_reflection_class));
 
-        $get_prepare_pdo_sql_method = $reflection_class->getMethod('preparePdoSql');         // 方法二 - 带参数
+        $get_prepare_pdo_sql_method = $reflection_class->getMethod('preparePdoSql');            // 方法二 - 带参数
         var_dump($get_prepare_pdo_sql_method->invoke($instance_reflection_class), array('show tables;'));
     }
 
