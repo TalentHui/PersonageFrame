@@ -1,45 +1,30 @@
 <?php
-/***********************************************************************************************************************
+/********************************************************************************
  * Platform:  PhpStorm - PersonageFrame - autoload.php
  * User:      吴辉
  * Date:      2017-08-24 22:40
  * Desc:      自动加载类
- * PSR0:      1):命名空间必须与绝对路径一致。
- *            2):类名的首字母必须要大写。
- *            3):除了入口文件以外，其他的.php文件中必须只有一个类，不能有可执行的代码。
- *
- *            PSR-4中，在类名中使用下划线没有任何特殊含义。而PSR-0则规定类名中的下划线_会被转化成目录分隔符。
- ***********************************************************************************************************************/
+ *******************************************************************************/
 
 namespace vendor;
 
 
 class autoload
 {
-    /** @var string 工程根目录 */
-    protected static $project_root_directory = '..';
-
     /** @var array 定义类文件的存放目录 */
     protected static $class_root_directory = array();
-
-    /** @var array 注册命名空间列表 */
-    protected static $register_namespace_list = array();
 
     /**
      * @desc  初始化类文件的存放目录
      * @param string $project_root_directory 工程根目录
-     * @param string $controller_directory   控制器目录
-     * @param string $vendor_directory       工程处理文件目录
      */
-    public static function instance($project_root_directory = '..', $controller_directory = '/application/controller/', $vendor_directory = '/vendor/')
+    public static function instance($project_root_directory = '..')
     {
-        self::$project_root_directory = rtrim($project_root_directory, '\\/');
-        $controller_directory = '/' . str_replace(trim($controller_directory, '\\'), '\\', '/') . '/';
-        $vendor_directory = '/' . str_replace(trim($vendor_directory, '\\'), '\\', '/') . '/';
+        $project_root_directory = rtrim($project_root_directory, '\\/');
 
         self::$class_root_directory = array(
-            'controller' => self::$project_root_directory . $controller_directory,
-            'vendor' => self::$project_root_directory . $vendor_directory
+            'controller' => $project_root_directory . '/application/controller/',
+            'vendor' => $project_root_directory . '/vendor/'
         );
     }
 
@@ -50,40 +35,6 @@ class autoload
     public static function register($prepend = false)
     {
         spl_autoload_register("vendor\autoload::UserAutoloadFunction", true, $prepend);
-    }
-
-    /**
-     * @desc   注册命名空间
-     * @param  string $namespace
-     * @param  string $extension_directory
-     * @return bool
-     */
-    public static function registerNamespace($namespace = '', $extension_directory = '')
-    {
-        if (empty($namespace) || !empty(self::$register_namespace_list[$namespace])) {
-            return false;
-        }
-
-        $namespace = str_replace(trim($namespace, '\\/'), '/', '\\');
-        $extension_directory = '/' . str_replace(trim($extension_directory, '\\'), '\\', '/') . '/';
-
-        self::$register_namespace_list[$namespace] = $extension_directory;
-        return true;
-    }
-
-    /**
-     * @desc   删除命名空间
-     * @param  string $namespace
-     * @return bool
-     */
-    public static function unsetNamespace($namespace = '')
-    {
-        if (empty($namespace) || empty(self::$register_namespace_list[$namespace])) {
-            return false;
-        }
-
-        unset(self::$register_namespace_list[$namespace]);
-        return true;
     }
 
     /**
@@ -119,10 +70,6 @@ class autoload
 
         /** step-4: 将路径中 \ 替换成 / */
         $need_load_class_path = strval(str_replace('\\', '/', $need_load_class_path));
-
-        if (!file_exists($need_load_class_path) && !empty(self::$register_namespace_list[$use_class_directory])) {
-            $need_load_class_path = self::$project_root_directory . DIRECTORY_SEPARATOR . trim(self::$register_namespace_list[$use_class_directory], '/') . DIRECTORY_SEPARATOR . $use_class_basename . '.php';
-        }
 
         return $need_load_class_path;
     }
