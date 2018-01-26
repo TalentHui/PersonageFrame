@@ -5,7 +5,8 @@
  * Date:      2018-01-26 19:33
  * Desc:      Socket 服务端类
  ********************************************************************************
- * @socket通信整个过程
+ * @socket通信整个过程 - 服务端 - 先度再写
+ ********************************************************************************
  *            @socket_create
  *            @socket_bind
  *            @socket_listen
@@ -139,7 +140,7 @@ class SocketServer
         $write_rel = socket_write($socket_resource, $msg, $msg_length);
 
         if (false === $write_rel) {
-            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error(self::$socket)), socket_last_error(self::$socket));
+            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
         }
 
         return $write_rel;
@@ -157,10 +158,26 @@ class SocketServer
         $read_rel  = socket_read($socket_resource, $data_length);
 
         if (false === $read_rel) {
-            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error(self::$socket)), socket_last_error(self::$socket));
+            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
         }
 
         return $read_rel;
+    }
+
+    /**
+     * @desc   close - 关闭socket资源
+     * @param  $socket_resource
+     * @throws Exception
+     */
+    public static function SocketClose($socket_resource)
+    {
+        $close_rel  = socket_close($socket_resource);
+
+        if (false === $close_rel) {
+            throw new Exception('socket_close() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
+        }
+
+        return $close_rel;
     }
 
     /**

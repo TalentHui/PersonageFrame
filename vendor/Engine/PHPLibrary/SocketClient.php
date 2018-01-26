@@ -5,7 +5,7 @@
  * Date:      2018-01-26 19:34
  * Desc:      Socket 客户端类
  ********************************************************************************
- * socket连接整个过程
+ * socket连接整个过程 - 客户端先写再读
  ********************************************************************************
  *            @socket_create
  *            @socket_connect
@@ -101,6 +101,59 @@ class SocketClient
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
+    }
+
+    /**
+     * @desc   write - 写入数据到建立的socket中
+     * @param  $socket_resource
+     * @param  $msg
+     * @param  $msg_length
+     * @return int
+     * @throws Exception
+     */
+    public static function SocketWrite($socket_resource, $msg, $msg_length)
+    {
+        $write_rel = socket_write($socket_resource, $msg, $msg_length);
+
+        if (false === $write_rel) {
+            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
+        }
+
+        return $write_rel;
+    }
+
+    /**
+     * @desc   read - 读取数据从建立的socket中
+     * @param  $socket_resource
+     * @param  int $data_length
+     * @return string
+     * @throws Exception
+     */
+    public static function SocketRead($socket_resource, $data_length = 10000)
+    {
+        $read_rel  = socket_read($socket_resource, $data_length);
+
+        if (false === $read_rel) {
+            throw new Exception('socket_write() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
+        }
+
+        return $read_rel;
+    }
+
+    /**
+     * @desc   close - 关闭socket资源
+     * @param  $socket_resource
+     * @throws Exception
+     */
+    public static function SocketClose($socket_resource)
+    {
+        $close_rel  = socket_close($socket_resource);
+
+        if (false === $close_rel) {
+            throw new Exception('socket_close() failed reason: ' . socket_strerror(socket_last_error($socket_resource)), socket_last_error($socket_resource));
+        }
+
+        return $close_rel;
     }
 
     /**
