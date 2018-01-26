@@ -36,8 +36,8 @@ class RedisPool
     }
 
     /**
-     * @desc  从链接池中销毁特定redis对象
-     * @param array $redis_conf
+     * @desc   从链接池中销毁特定redis对象
+     * @param  array $redis_conf
      * @return bool
      */
     public static function destroySinglePool(array $redis_conf = array())

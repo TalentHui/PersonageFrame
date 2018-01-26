@@ -17,6 +17,11 @@ class MongoDbPHP5
     protected $mongo;
     protected $collection;
 
+    /**
+     * MongoDbPHP5 constructor.
+     * @param  $info
+     * @throws \Exception
+     */
     public function __construct($info)
     {
         $this->mongo = $this->instanceMongo($info);
@@ -44,6 +49,13 @@ class MongoDbPHP5
         return sprintf($connect_string, $info['host'], $info['port']);
     }
 
+    /**
+     * @param  $collection
+     * @param  $dbs
+     * @param  null $mongo
+     * @return \MongoCollection
+     * @throws \Exception
+     */
     public function selectCollection($collection, $dbs, $mongo = NULL)
     {
         $mongo = $mongo == NULL ? $this->mongo : $mongo;

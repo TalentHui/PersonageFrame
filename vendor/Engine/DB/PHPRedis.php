@@ -23,8 +23,8 @@ class PHPRedis
 
     /**
      * PHPRedis constructor.
-     * @param array $redis_conf redis配置
-     * @param bool $is_master 默认true true：master，false：slave
+     * @param  array $redis_conf redis配置
+     * @param  bool $is_master 默认true true：master，false：slave
      * @throws \Exception
      */
     public function __construct(array $redis_conf = array(), $is_master = true)
@@ -40,7 +40,7 @@ class PHPRedis
     }
 
     /**
-     * @desc 当前操作的redis信息
+     * @desc  当前操作的redis信息
      */
     public function currentOperationRedisInfo()
     {
@@ -51,7 +51,7 @@ class PHPRedis
     }
 
     /**
-     * @desc redis 配置转换
+     * @desc  redis 配置转换
      * @param array $redis_config redis配置
      */
     protected function configConvert(array $redis_config = array())

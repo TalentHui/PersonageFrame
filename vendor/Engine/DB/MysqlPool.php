@@ -36,8 +36,8 @@ class MysqlPool
     }
 
     /**
-     * @desc  从链接池中销毁特定mysql对象
-     * @param array $mysql_conf
+     * @desc   从链接池中销毁特定mysql对象
+     * @param  array $mysql_conf
      * @return bool
      */
     public static function destroySinglePool(array $mysql_conf = array())
