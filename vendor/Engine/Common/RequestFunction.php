@@ -186,10 +186,17 @@ class RequestFunction
     }
 
     /**
-     * @desc 获取代理服务器地址
+     * @desc   获取代理服务器地址
+     * @return array
      */
     public static function getProxyIpAddress()
     {
+        $proxy_info = array('status' => 100, 'desc' => '没有使用代理或者使用高匿名代理', 'ip' => array());
 
+        if (!empty($_SERVER['HTTP_VIA'])) {
+
+        }
+
+        return $proxy_info;
     }
 }
