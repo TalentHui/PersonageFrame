@@ -84,6 +84,28 @@ class RequestFunction
     }
 
     /**
+     * @desc   发送 post 请求 - file_get_contents
+     * @param  $url
+     * @param  $post_data
+     * @return bool|string
+     */
+    public static function sendPostByFileGetContents($url, $post_data)
+    {
+        $context_options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n"
+                    . "Content-Length: " . strlen($post_data) . "\r\n",
+                'content' => $post_data
+            )
+        );
+        $context = stream_context_create($context_options);
+
+        $result = file_get_contents($url, 0, $context);
+        return $result;
+    }
+
+    /**
      * @desc   检测是不是 ajax 的 get 请求
      * @return bool
      */
