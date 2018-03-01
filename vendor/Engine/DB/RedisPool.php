@@ -14,6 +14,12 @@ class RedisPool
     /** @var PHPRedis[] redis连接池容器 */
     protected static $redis_pool = array();
 
+    /**
+     * @param  array $redis_conf
+     * @param  bool $is_master
+     * @return PHPRedis
+     * @throws \Exception
+     */
     public static function getRedisObject(array $redis_conf = array(), $is_master = true)
     {
         $connect_md5_sign = md5(json_encode($redis_conf));
