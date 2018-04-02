@@ -25,7 +25,7 @@ class SocketClient
     protected static $socket_domain = AF_INET;
     /** @var int  选择套接字使用的类型 */
     protected static $socket_type = SOCK_STREAM;
-    /** @var int  置指定 domain 套接字下的具体协议 */
+    /** @var int  指定 domain 套接字下的具体协议 */
     protected static $socket_protocol = SOL_TCP;
     /** @var object socket套接字资源 */
     protected static $socket;
