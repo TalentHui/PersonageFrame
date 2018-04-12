@@ -12,6 +12,7 @@ class ReflectionStudy extends BaseController
 {
     /**
      * @desc 获取一个类的有关信息
+     * @throws ReflectionException
      */
     public function index()
     {
@@ -102,6 +103,9 @@ class ReflectionStudy extends BaseController
         var_dump($get_prepare_pdo_sql_method->invoke($instance_reflection_class), array('show tables;'));
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function getMethodInfoByReflection()
     {
         $method = new ReflectionMethod('Engine\DB\MysqlPDO', 'preparePdoSql');

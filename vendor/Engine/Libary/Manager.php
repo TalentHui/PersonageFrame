@@ -18,6 +18,10 @@ class Manager
      */
     static $pool;
 
+    /**
+     * @return bool|mixed
+     * @throws \Exception
+     */
     public static function pool()
     {
         $args = func_get_args();
@@ -41,6 +45,7 @@ class Manager
 
     /**
      * @return object
+     * @throws \ReflectionException
      */
     public static function getDynamic()
     {
