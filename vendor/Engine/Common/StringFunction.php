@@ -47,17 +47,4 @@ class StringFunction
 
         return mb_substr($content, 0, $length);
     }
-
-    /**
-     * @desc   将字节大小转换为人类可视大小
-     * @param  int $size 字节大小
-     * @return string
-     */
-    public static function convert($size = 0)
-    {
-        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-        $location_size = @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2);
-        $location_unit = strtoupper($unit[empty($i) ? 0 : $i]);
-        return "{$location_size}({$location_unit})";
-    }
 }
