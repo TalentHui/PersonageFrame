@@ -27,7 +27,7 @@ class SocketClient
     protected static $socket_type = SOCK_STREAM;
     /** @var int  指定 domain 套接字下的具体协议 */
     protected static $socket_protocol = SOL_TCP;
-    /** @var object socket套接字资源 */
+    /** @var resource socket套接字资源 */
     protected static $socket;
 
     /**

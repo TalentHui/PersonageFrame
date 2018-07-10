@@ -14,7 +14,7 @@ use Engine\Common\RequestFunction;
 class FileLog
 {
     /** 日志文件名模板 第一个%s 日志前缀 第二个%s 日期 */
-    const LOG_FILE_NAME_MODEL_DAILY = '%s_log_%s.log';
+    const LOG_FILE_NAME_MODEL_DAILY = '%s_log_%s.logs';
 
     /**
      * @desc 错误信息列表
@@ -74,7 +74,7 @@ class FileLog
      */
     public static function setProjectRootDirectory($project_root_directory)
     {
-        self::$project_root_directory = $project_root_directory;
+        self::$project_root_directory = rtrim($project_root_directory, "\\");
     }
 
     /**
