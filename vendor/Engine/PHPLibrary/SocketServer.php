@@ -90,6 +90,10 @@ class SocketServer
     public static function Instance($ip = '127.0.01', $port = '10001', $backlog = 3)
     {
         try {
+            if (!self::CheckSocketFunctionSupport()) {
+                throw new Exception('not support socket');
+            }
+
             self::$socket = socket_create(self::$socket_domain, self::$socket_type, self::$socket_protocol);
 
             if (false === self::$socket) {

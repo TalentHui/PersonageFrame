@@ -27,7 +27,7 @@ class HelpFunction
 
     /**
      * @desc   获取目录下全部文件
-     * @param  string $init_path     要读取的目录
+     * @param  string $init_path 要读取的目录
      * @param  array $file_extension 需要读取的文件扩展名（如：array('jpg', 'jpeg', 'png')）
      * @return array
      */
@@ -50,7 +50,7 @@ class HelpFunction
 
             if (is_file($package_file_path)) {
                 // 判断后缀
-                $current_file_name_extension = substr($file_name, strrpos($file_name, '.')+1);
+                $current_file_name_extension = substr($file_name, strrpos($file_name, '.') + 1);
 
                 if ($file_extension && !in_array($current_file_name_extension, $file_extension)) {
                     continue;
@@ -88,13 +88,13 @@ class HelpFunction
 
     /**
      * @desc  输出进度条
-     * @param int $current_index     当前执行到的元素下标
+     * @param int $current_index 当前执行到的元素下标
      * @param int $count_total_index 元素总数
-     * @param string $extra          额外描述
+     * @param string $extra 额外描述
      */
     public static function ProgressBar($current_index, $count_total_index, $extra = '')
     {
-        $rate = $current_index/$count_total_index;
+        $rate = $current_index / $count_total_index;
 
         /**
          * printf 第一个参数内部元素描述：
@@ -105,10 +105,28 @@ class HelpFunction
          * \n          \n是换行，使光标下移一格
          */
         if ($rate >= 1) {
-            printf("PROGRESS: [%-50s] @ %d%% FINISH {$extra}\r", str_repeat('.', $rate*50), $rate*100);
+            printf("PROGRESS: [%-50s] @ %d%% FINISH {$extra}\r", str_repeat('.', $rate * 50), $rate * 100);
             echo PHP_EOL;
         } else {
-            printf("PROGRESS: [%-50s] @ %d%% ING{$extra}\r", str_repeat('.', $rate*50), $rate*100);
+            printf("PROGRESS: [%-50s] @ %d%% ING{$extra}\r", str_repeat('.', $rate * 50), $rate * 100);
         }
+    }
+
+    /**
+     * @desc   命令行 - 输入
+     * @return bool|string
+     */
+    public static function AcceptCommandInput()
+    {
+        return fgets(STDIN);
+    }
+
+    /**
+     * @desc   命令行 - 输出
+     * @param  string $output
+     */
+    public static function AcceptCommandOutput($output = '')
+    {
+        fwrite(STDOUT, $output . PHP_EOL);
     }
 }
