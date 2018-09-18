@@ -131,26 +131,33 @@ class HelpFunction
     }
 
     /**
-     * @desc   解析UA信息
+     * @desc   通过解析UA头部信息，获取系统类型、系统版本、手机型号
      * @param  string $ua_string
      * @return array
+     * `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+     * array (
+     *      's' => '系统类型',     // android || ios
+     *      's_v' => '系统版本',   // 6.0.0
+     *      'p_t' => '手机型号',   // iphone || OP ...
+     * )
+     * `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
      */
     function parse_ua_string($ua_string = '')
     {
-        $phone_info = array('system' => '', 'version' => '', 'type' => '');
+        $phone_info = array('s' => '', 's_v' => '', 'p_t' => '');
 
         // android
-        if (preg_match_all("/Android ([\d.]+); ([\w-_]+) Build\/(([\w-_]+))/", $ua_string, $match_list)) {
-            $phone_info['system'] = 'android';
-            $phone_info['version'] = $match_list['1']['0'];
-            $phone_info['type'] = $match_list['3']['0'];
+        if (preg_match_all("/.*Android ([\d.]+); ([\w-_ ]+) Build\/(([\w-._ ]+))/", $ua_string, $match_list)) {
+            $phone_info['s'] = 'android';
+            $phone_info['s_v'] = trim($match_list['1']['0']);
+            $phone_info['p_t'] = trim($match_list['3']['0']);
         }
 
         // phone
         if (preg_match_all('/\(iPhone; CPU iPhone OS ([\d_]+) ([\w ]+)\)/', $ua_string, $match_list)) {
-            $phone_info['system'] = 'ios';
-            $phone_info['version'] = str_replace('_', '.', $match_list['1']['0']);
-            $phone_info['type'] = 'iphone';
+            $phone_info['s'] = 'ios';
+            $phone_info['s_v'] = trim(str_replace('_', '.', $match_list['1']['0']));
+            $phone_info['p_t'] = 'iphone';
         }
 
         return $phone_info;
