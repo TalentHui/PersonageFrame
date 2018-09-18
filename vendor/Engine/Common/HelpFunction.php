@@ -129,4 +129,30 @@ class HelpFunction
     {
         fwrite(STDOUT, $output . PHP_EOL);
     }
+
+    /**
+     * @desc   解析UA信息
+     * @param  string $ua_string
+     * @return array
+     */
+    function parse_ua_string($ua_string = '')
+    {
+        $phone_info = array('system' => '', 'version' => '', 'type' => '');
+
+        // android
+        if (preg_match_all("/Android ([\d.]+); ([\w-_]+) Build\/(([\w-_]+))/", $ua_string, $match_list)) {
+            $phone_info['system'] = 'android';
+            $phone_info['version'] = $match_list['1']['0'];
+            $phone_info['type'] = $match_list['3']['0'];
+        }
+
+        // phone
+        if (preg_match_all('/\(iPhone; CPU iPhone OS ([\d_]+) ([\w ]+)\)/', $ua_string, $match_list)) {
+            $phone_info['system'] = 'ios';
+            $phone_info['version'] = str_replace('_', '.', $match_list['1']['0']);
+            $phone_info['type'] = 'iphone';
+        }
+
+        return $phone_info;
+    }
 }
