@@ -142,7 +142,7 @@ class HelpFunction
      * )
      * `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
      */
-    function parse_ua_string($ua_string = '')
+    public static function parseUaString($ua_string = '')
     {
         $phone_info = array('s' => '', 's_v' => '', 'p_t' => '');
 
@@ -161,5 +161,15 @@ class HelpFunction
         }
 
         return $phone_info;
+    }
+
+    /**
+     * @desc   获取请求的URL
+     * @return string
+     */
+    public static function getRequestUrl()
+    {
+        $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+        return $http_type . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
     }
 }
