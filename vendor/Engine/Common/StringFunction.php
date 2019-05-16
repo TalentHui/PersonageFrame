@@ -47,4 +47,20 @@ class StringFunction
 
         return mb_substr($content, 0, $length);
     }
+
+    /**
+     * @desc   转码 - CP936 转 UTF-8
+     * @param  $string
+     * @return false|string
+     */
+    public static function Cp936IconUtf8($string)
+    {
+        $string_encode = mb_detect_encoding($string, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5"));
+
+        if (strtolower($string_encode) == "cp936") {
+            $string = iconv('utf-8', 'latin1//IGNORE', $string);
+        }
+
+        return $string;
+    }
 }

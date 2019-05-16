@@ -25,78 +25,21 @@ class RequestFunction
     }
 
     /**
-     * @desc   发送 post 请求
-     * @param  string $url     请求的Url路径
-     * @param  array  $data    POST参数
-     * @param  int    $timeout 超时处理
-     * @param  bool   $CA      是否验证CA
-     * @param  string $ca_file CA证书的存放位置
-     * @return mixed
-     */
-    public static function curlPost($url = '', $data = array(), $timeout = 30, $CA = false, $ca_file = '')
-    {
-        $ca_cert = getcwd() . $ca_file;
-        $SSL = substr($url, 0, 8) == "https://" ? true : false;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout - 2);
-
-        if ($SSL && $CA) {
-
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_CAINFO, $ca_cert);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        } else if ($SSL && !$CA) {
-
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        }
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $ret = curl_exec($ch);
-        curl_close($ch);
-        return $ret;
-    }
-
-    /**
-     * @desc   发送 get 请求
-     * @param  $url
-     * @param  int $timeout
-     * @return mixed
-     */
-    public static function curlGet($url, $timeout = 1)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $ret = curl_exec($ch);
-        curl_close($ch);
-        return $ret;
-    }
-
-    /**
      * @desc   发送 post 请求 - file_get_contents
      * @param  $url
      * @param  $post_data
+     * @param  int $timeout_seconds
      * @return bool|string
      */
-    public static function sendPostByFileGetContents($url, $post_data)
+    public static function sendPostByFileGetContents($url, $post_data, $timeout_seconds =3)
     {
         $context_options = array(
             'http' => array(
                 'method' => 'POST',
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n"
                     . "Content-Length: " . strlen($post_data) . "\r\n",
-                'content' => $post_data
+                'content' => $post_data,
+                'timeout' => $timeout_seconds,
             )
         );
         $context = stream_context_create($context_options);

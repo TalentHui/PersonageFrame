@@ -7,6 +7,8 @@
  *******************************************************************************/
 
 use Engine\Base\BaseController;
+use Engine\Common\EChartsFunction;
+use Engine\Common\RequestFunction;
 
 class ViewController extends  BaseController
 {
@@ -17,6 +19,6 @@ class ViewController extends  BaseController
             return;
         }
 
-        \Engine\Common\RequestFunction::ajaxJsonReturn(\Engine\Common\EChartsFunction::packEChartsReturnData());
+        RequestFunction::ajaxJsonReturn(EChartsFunction::packEChartsReturnData());
     }
 }

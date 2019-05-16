@@ -1,6 +1,7 @@
 <?php
 
 use Engine\Base\BaseController;
+use Engine\Common\HelpFunction;
 use Engine\PHPLibrary\SocketClient;
 use Engine\PHPLibrary\SocketServer;
 
@@ -32,7 +33,7 @@ class Socket extends BaseController
             } while (true);
 
         } catch (Exception $e) {
-            \Engine\Common\HelpFunction::EchoSelf($e->getMessage());
+            HelpFunction::EchoSelf($e->getMessage());
         }
     }
 
@@ -44,7 +45,7 @@ class Socket extends BaseController
             SocketClient::Instance();
 
         } catch (Exception $e) {
-            \Engine\Common\HelpFunction::EchoSelf($e->getMessage());
+            HelpFunction::EchoSelf($e->getMessage());
         }
     }
 }

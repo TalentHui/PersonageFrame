@@ -8,6 +8,8 @@
 namespace Engine\Common;
 
 
+use Exception;
+
 class FileFunction
 {
     /**
@@ -127,7 +129,7 @@ class FileFunction
 
         try {
             $json_data = json_decode(file_get_contents($json_file_path), true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $json_data = array();
         }
 

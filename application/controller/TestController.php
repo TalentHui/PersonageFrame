@@ -7,25 +7,29 @@
  *******************************************************************************/
 
 use Engine\Base\BaseController;
+use Engine\Behavior\CreateMySQL;
+use Engine\Behavior\SqlBaseCommand;
+use Handler\MysqlHandler;
+use Handler\RedisHandler;
 
 class TestController extends BaseController
 {
     public function redisExample()
     {
-        $redis = \Handler\RedisHandler::LocationRedisHandler();
+        $redis = RedisHandler::LocationRedisHandler();
         var_dump($redis->getRedisObject()->keys('*'));
     }
 
     public function mysqlExample()
     {
-        $mysql = \Handler\MysqlHandler::LocationMysqlHandler();
-        $mysql->pdoQuery(\Engine\Behavior\SqlBaseCommand::DatabasesShowAll());
+        $mysql = MysqlHandler::LocationMysqlHandler();
+        $mysql->pdoQuery(SqlBaseCommand::DatabasesShowAll());
         $rel = $mysql->getPdoSqlRelFetchAll();
         var_dump($rel);
     }
 
     public function createCreate()
     {
-        echo iconv('utf-8', 'gbk', \Engine\Behavior\CreateMySQL::MySQLDataType());
+        echo iconv('utf-8', 'gbk', CreateMySQL::MySQLDataType());
     }
 }
